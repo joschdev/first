@@ -1,0 +1,163 @@
+Ziel des Projekt ist die App-Architektur des App-Projekt im Rahmen des Docker-Kurses in Jenkins
+mit eine privaten Repository für das APP-Image abzubilden.
+-------------------------------------------------------------------------------------------------
+- jenkins-Image erstellen und auf dockerhub hochladen
+
+josch@josch-All-Series:~/projekt/first/build_jenkins_image$ pwd
+/home/josch/projekt/first/build_jenkins_image
+
+josch@josch-All-Series:~/projekt/first/build_jenkins_image$ more Dockerfile 
+FROM jenkins/jenkins:latest
+USER root
+RUN apt-get update && apt-get install -y lsb-release python3-pip
+RUN curl -fsSLo /usr/share/keyrings/docker-archive-keyring.asc \
+  https://download.docker.com/linux/debian/gpg
+RUN echo "deb [arch=$(dpkg --print-architecture) \
+  signed-by=/usr/share/keyrings/docker-archive-keyring.asc] \
+  https://download.docker.com/linux/debian \
+  $(lsb_release -cs) stable" > /etc/apt/sources.list.d/docker.list
+RUN apt-get update && apt-get install -y docker-ce-cli
+USER jenkins
+RUN jenkins-plugin-cli --plugins "blueocean:1.25.3 docker-workflow:1.28"
+
+josch@josch-All-Series:~/projekt/first/build_jenkins_image$ docker build -t joschdevel/jenkins:latest .
+[+] Building 221.8s (11/11) FINISHED                             docker:default
+ => [internal] load build definition from Dockerfile                       0.5s
+ => => transferring dockerfile: 620B                                       0.0s
+ => [internal] load metadata for docker.io/jenkins/jenkins:latest          3.5s
+ => [auth] jenkins/jenkins:pull token for registry-1.docker.io             0.0s
+ => [internal] load .dockerignore                                          0.4s
+ => => transferring context: 2B                                            0.0s
+ => [1/6] FROM docker.io/jenkins/jenkins:latest@sha256:ad2d26b2fa1b4a0f1  54.8s
+ => => resolve docker.io/jenkins/jenkins:latest@sha256:ad2d26b2fa1b4a0f14  0.6s
+ => => sha256:ad2d26b2fa1b4a0f14185a8fc00f1720c5e56870322 3.12kB / 3.12kB  0.0s
+ => => sha256:2d07acdb17f1e6cd6cc1f94430950447e5ea05aab7d 2.58kB / 2.58kB  0.0s
+ => => sha256:bdfa23d53363de3229d6bb6ed9ffde201922ffa59 12.60kB / 12.60kB  0.0s
+ => => sha256:8cd46d290033f265db57fd808ac81c444ec5a5b3 49.56MB / 49.56MB  21.8s
+ => => sha256:d300632aaba041abf6e5a2c2df1d7e8a2d924c1ef06 8.85MB / 8.85MB  4.3s
+ => => sha256:22f21b3d4b3a428554c19f07f1a5aff8e3eacb07 61.35MB / 61.35MB  28.7s
+ => => sha256:b07a2c36ecd3a5aeaf5775ac8dac5a159f77ece4a79 1.23kB / 1.23kB  4.7s
+ => => sha256:023c7e706ce8476937417717cd6658b495c11c5e924d978 182B / 182B  5.2s
+ => => sha256:9af8ff5e9af86f29081bd4271dc8f7750ab11e2b 95.64MB / 95.64MB  47.4s
+ => => sha256:9d418316d89039b56b4ecf8a66e5d88e96b8ebec96a8fd 189B / 189B  22.3s
+ => => extracting sha256:8cd46d290033f265db57fd808ac81c444ec5a5b3f189c3d6  1.6s
+ => => sha256:c6193ba241e5df099290edcc6dc21f7b3421d8f2a6 6.24MB / 6.24MB  24.5s
+ => => sha256:84e0ac6dbde02210a4b05d1ca4c11d9b46ad978f 63.24MB / 63.24MB  38.8s
+ => => sha256:3fe232cf86e92fff04c142e911e60489f16d89b9e8 1.93kB / 1.93kB  29.2s
+ => => extracting sha256:22f21b3d4b3a428554c19f07f1a5aff8e3eacb07609c6d87  1.5s
+ => => sha256:d4832e91bd993c19724ec19283d10f2a9a1aa68a70 1.25kB / 1.25kB  29.6s
+ => => sha256:fec4a05f40da0517ec86fa965728ca61d7f91080d3b3f2 391B / 391B  30.0s
+ => => extracting sha256:d300632aaba041abf6e5a2c2df1d7e8a2d924c1ef0699614  0.2s
+ => => extracting sha256:b07a2c36ecd3a5aeaf5775ac8dac5a159f77ece4a79aebd8  0.0s
+ => => extracting sha256:023c7e706ce8476937417717cd6658b495c11c5e924d978d  0.0s
+ => => extracting sha256:9af8ff5e9af86f29081bd4271dc8f7750ab11e2b79fe1aea  0.5s
+ => => extracting sha256:9d418316d89039b56b4ecf8a66e5d88e96b8ebec96a8fd2c  0.0s
+ => => extracting sha256:c6193ba241e5df099290edcc6dc21f7b3421d8f2a6620896  0.1s
+ => => extracting sha256:84e0ac6dbde02210a4b05d1ca4c11d9b46ad978fe3ea35d6  0.5s
+ => => extracting sha256:3fe232cf86e92fff04c142e911e60489f16d89b9e87b020c  0.0s
+ => => extracting sha256:d4832e91bd993c19724ec19283d10f2a9a1aa68a7090fbf5  0.0s
+ => => extracting sha256:fec4a05f40da0517ec86fa965728ca61d7f91080d3b3f241  0.0s
+ => [2/6] RUN apt-get update && apt-get install -y lsb-release python3-p  96.6s
+ => [3/6] RUN curl -fsSLo /usr/share/keyrings/docker-archive-keyring.asc   2.2s
+ => [4/6] RUN echo "deb [arch=$(dpkg --print-architecture)   signed-by=/u  1.9s
+ => [5/6] RUN apt-get update && apt-get install -y docker-ce-cli          25.4s
+ => [6/6] RUN jenkins-plugin-cli --plugins "blueocean:1.25.3 docker-work  27.0s
+ => exporting to image                                                     8.4s
+ => => exporting layers                                                    8.1s
+ => => writing image sha256:cf5467084409da9046b34df141ff8a3d118b43f97c0a1  0.0s
+ => => naming to docker.io/joschdevel/jenkins:latest                       0.1s
+
+josch@josch-All-Series:~/projekt/first/build_jenkins_image$ docker push joschdevel/jenkins:latest
+The push refers to repository [docker.io/joschdevel/jenkins]
+db6ad9908d26: Pushed 
+53244b741890: Pushed 
+2216fa651131: Pushed 
+d057d42b20df: Pushed 
+435506d85627: Pushed 
+f5610544d0e7: Mounted from jenkins/jenkins 
+01df477865b0: Mounted from jenkins/jenkins 
+2ad10c54d6af: Mounted from jenkins/jenkins 
+117d7eb3d768: Mounted from jenkins/jenkins 
+be5f30e71622: Mounted from jenkins/jenkins 
+fad15ae7890c: Mounted from jenkins/jenkins 
+8e25d3336f99: Mounted from jenkins/jenkins 
+e4bf2ba9d2cf: Mounted from jenkins/jenkins 
+e7d40e1833e4: Mounted from jenkins/jenkins 
+3130955e62e1: Mounted from jenkins/jenkins 
+b1d16de06e99: Mounted from jenkins/jenkins 
+6abe10f2f601: Mounted from jenkins/jenkins 
+latest: digest: sha256:1d4d9499b2840d153b704ce8aaacdf0536cc5928d05bb0d313203047c698246f size: 3885
+-------------------------------------------------------------------------------------------------
+- Jenkin-Container probeweise starten
+
+Erstellen eines jenkins-Docker-Netzwerkes
+
+josch@josch-All-Series:~/projekt/first$ docker network create jenkins
+aa2266abdb96e05efd320cdd7c737364e8fc25f0ff805a53a8dd32d9a2952053
+josch@josch-All-Series:~/projekt/first$ docker network ls
+NETWORK ID     NAME            DRIVER    SCOPE
+eabdcdb6cf29   bridge          bridge    local
+2a2dba07405d   host            host      local
+aa2266abdb96   jenkins         bridge    local
+5557cb3f3a22   mongo-network   bridge    local
+ff20701bfebb   none            null      local
+
+Starten des Jenkins-Containers
+
+josch@josch-All-Series:~/projekt/first$ docker run --name jenkins --restart=on-failure --detach   --network jenkins --env DOCKER_HOST=tcp://docker:2376   --env DOCKER_CERT_PATH=/certs/client --env DOCKER_TLS_VERIFY=1   --publish 8080:8080 --publish 50000:50000   --volume jenkins-data:/var/jenkins_home   --volume jenkins-docker-certs:/certs/client:ro   joschdevel/jenkins:latest
+01402cfe7acd6dd2bb8a9256143b8efe00057d30fb853cb8a5a7e16fa108f3c6
+
+Aufruf im Browser (localhost:8080)
+
+-> Um Jenkins zu entsperren, muss man das im File /var/jenkins_home/secrets/initialAdminPassword des Containers enthaltene Administrator-Passwort eingeben
+
+josch@josch-All-Series:~/projekt/first$ docker ps
+CONTAINER ID   IMAGE                       COMMAND                  CREATED         STATUS         PORTS                                                                                      NAMES
+01402cfe7acd   joschdevel/jenkins:latest   "/usr/bin/tini -- /u…"   3 minutes ago   Up 3 minutes   0.0.0.0:8080->8080/tcp, :::8080->8080/tcp, 0.0.0.0:50000->50000/tcp, :::50000->50000/tcp   jenkins
+josch@josch-All-Series:~/projekt/first$ docker exec -it 01402cfe7acd /bin/bash
+jenkins@01402cfe7acd:/$ cat /var/jenkins_home/secrets/initialAdminPassword
+3f677d8bde2c4a58b941d7d312ac117d
+jenkins@01402cfe7acd:/$ exit
+exit
+
+Inbetriebnahmeprozess
+- Install suggested plugins
+- First Admin-User-Account anlegen: admin/josch
+- Jenkins-URL-Default bestätigen
+- Jenkins-URL wird gestartet
+- Unter Jenkins verwalten werden einige Plugin-Meldungen -> einige kann man Plugins bzw. deren Updates runterläd und dann Jenkins über die Oberfläche neu startet.
+
+-------------------------------------------------------------------------------------------------
+- Projektverzeichnis auf Github versionieren
+
+Repository joschdev/first auf Github angelegt
+
+Projektverzeichnis git-fähig machen und primären Branch "main" benennen
+
+josch@josch-All-Series:~/projekt/first$ git init
+Hinweis: Als Name für den initialen Branch wurde 'master' benutzt. Dieser
+Hinweis: Standard-Branchname kann sich ändern. Um den Namen des initialen Branches
+Hinweis: zu konfigurieren, der in allen neuen Repositories verwendet werden soll und
+Hinweis: um diese Warnung zu unterdrücken, führen Sie aus:
+Hinweis: 
+Hinweis: 	git config --global init.defaultBranch <Name>
+Hinweis: 
+Hinweis: Häufig gewählte Namen statt 'master' sind 'main', 'trunk' und
+Hinweis: 'development'. Der gerade erstellte Branch kann mit diesem Befehl
+Hinweis: umbenannt werden:
+Hinweis: 
+Hinweis: 	git branch -m <Name>
+Leeres Git-Repository in /home/josch/projekt/first/.git/ initialisiert
+josch@josch-All-Series:~/projekt/first$ git branch -m main
+
+Verbinden des lokalen mit dem Github Repository. 
+
+
+
+
+
+
+
+
+
+
